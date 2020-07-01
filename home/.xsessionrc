@@ -1,0 +1,3 @@
+xset s off
+xset -dpms
+sudo /usr/local/bin/splash.sh & chromium-browser --noerrdialogs --disable-infobars --kiosk --incognito --window-position=0,0 --window-size=800,480 --disable-pinch --overscroll-history-navigation=0 http://localhost/raspiwebos
