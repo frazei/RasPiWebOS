@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Pitunes</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="notranslate">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <link rel="stylesheet" tyle="text/css" href="css/index.css" />
+    <link rel="stylesheet" tyle="text/css" href="css/keyboard.css" />
+    <script src="js/wifi.js"></script>
+    <script src="js/keyboard.js"></script>
+</head>
+<script>
+    $(function() {
+        // attività preliminari wifi
+        wifiStatus();
+        wifiScan();
+        // handler per la tastiera sul campo password del wifi
+        $('#psk').on('focusin', function() {
+            $('#keyboard_container').show();
+        });
+        // handler al click degli elementi del menu
+        $('div#settings .menu li').click(function() {
+            $('div#settings .menu li').removeClass('selected');
+            $(this).addClass('selected');
+            $('div#settings .body > div').hide();
+            $($(this).attr('href')).show();
+        });
+        // seleziono il primo elemento del menu all'avvio
+        $('div#settings .menu li')[0].click();
+    });
+</script>
+<body>
+<div id="settings">
+    <div class="head" onclick="location.reload()">Settings</div>
+    <div class="menu">
+        <ul>
+            <li href="div#wifi">Wifi</li>
+            <li href="div#ethernet">Ethernet</li>
+            <li href="div#display">Display</li>
+            <li href="div#system">System</li>
+        </ul>
+    </div>
+    <div class="body">
+        <div id="wifi">
+            Connected to: <span id="wifi_status">...</span><br />
+            <select id="list" size="6" style="width: 520px">
+                <option>No wifi</option>
+            </select><br />
+            <input type="button" value="Scansiona" onclick="wifiScan()" />
+            <span id="scanning">Scansione in corso...</span><br />
+            <textarea id="psk" rows="1" cols="60"></textarea><br />
+            <input type="button" value="Connetti" onclick="wifiConnect()" />
+            <span id="connecting" style="display: none">Connessione in corso...</span><br />
+        </div>
+        <div id="ethernet">
+            Cable connected: <span id="eth_status">...</span><br />
+            Ip address: <span id="eth_ip">...</span>
+        </div>
+        <div id="display">
+            Backlight:<br/>
+            <input type='range' min='15' max='255' value='' class='slider' id='brightness'>
+            <input type='text' value='' class='slider_value' id='actual_brightness'><br />
+            Display dim timeout (seconds): <br/>
+            <input type='range' min='5' max='3600' value='' class='slider' id='timeout'>
+            <input type='text' value='' class='slider_value' id='actual_timeout'><br />
+            <input type='button' value='Test Screensaver' onclick='startScreensaver()' /><br/>
+        </div>
+        <div id="system">
+            <a href="pitunes.html">Avvia PiTunes</a>
+        </div>
+    </div>
+</div>
+<div id="keyboard_container">
+    <div id="keyboard_close" onclick="$('#keyboard_container').hide()">CLOSE</div>
+    <ul id="keyboard">
+        <li class="symbol"><span class="off">`</span><span class="on">~</span></li>
+        <li class="symbol"><span class="off">1</span><span class="on">!</span></li>
+        <li class="symbol"><span class="off">2</span><span class="on">@</span></li>
+        <li class="symbol"><span class="off">3</span><span class="on">#</span></li>
+        <li class="symbol"><span class="off">4</span><span class="on">$</span></li>
+        <li class="symbol"><span class="off">5</span><span class="on">%</span></li>
+        <li class="symbol"><span class="off">6</span><span class="on">^</span></li>
+        <li class="symbol"><span class="off">7</span><span class="on">&amp;</span></li>
+        <li class="symbol"><span class="off">8</span><span class="on">*</span></li>
+        <li class="symbol"><span class="off">9</span><span class="on">(</span></li>
+        <li class="symbol"><span class="off">0</span><span class="on">)</span></li>
+        <li class="symbol"><span class="off">-</span><span class="on">_</span></li>
+        <li class="symbol"><span class="off">=</span><span class="on">+</span></li>
+        <li class="delete lastitem">delete</li>
+        <li class="tab">tab</li>
+        <li class="letter">q</li>
+        <li class="letter">w</li>
+        <li class="letter">e</li>
+        <li class="letter">r</li>
+        <li class="letter">t</li>
+        <li class="letter">y</li>
+        <li class="letter">u</li>
+        <li class="letter">i</li>
+        <li class="letter">o</li>
+        <li class="letter">p</li>
+        <li class="symbol"><span class="off">[</span><span class="on">{</span></li>
+        <li class="symbol"><span class="off">]</span><span class="on">}</span></li>
+        <li class="symbol lastitem"><span class="off">\</span><span class="on">|</span></li>
+        <li class="capslock">caps lock</li>
+        <li class="letter">a</li>
+        <li class="letter">s</li>
+        <li class="letter">d</li>
+        <li class="letter">f</li>
+        <li class="letter">g</li>
+        <li class="letter">h</li>
+        <li class="letter">j</li>
+        <li class="letter">k</li>
+        <li class="letter">l</li>
+        <li class="symbol"><span class="off">;</span><span class="on">:</span></li>
+        <li class="symbol"><span class="off">'</span><span class="on">&quot;</span></li>
+        <li class="return lastitem">return</li>
+        <li class="left-shift">shift</li>
+        <li class="letter">z</li>
+        <li class="letter">x</li>
+        <li class="letter">c</li>
+        <li class="letter">v</li>
+        <li class="letter">b</li>
+        <li class="letter">n</li>
+        <li class="letter">m</li>
+        <li class="symbol"><span class="off">,</span><span class="on">&lt;</span></li>
+        <li class="symbol"><span class="off">.</span><span class="on">&gt;</span></li>
+        <li class="symbol"><span class="off">/</span><span class="on">?</span></li>
+        <li class="right-shift lastitem">shift</li>
+        <li class="space lastitem">&nbsp;</li>
+    </ul>
+</div>
+
+</body>
+</html>
